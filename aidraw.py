@@ -30,7 +30,7 @@ class AIDrawPlugin:
         self.cc = cc.CmdConfig()
         self.seed = None
         config = {
-            "naifu_site": None,
+            "novelai_site": None,
             "width": 512,
             "height": 768,
             "ntags": "",
@@ -60,22 +60,22 @@ class AIDrawPlugin:
                 return True, tuple([True, self.help_menu(), "nai"])
             
             if l[1].lower() == "site":
-                self.config["naifu_site"] = l[2]
+                self.config["novelai_site"] = l[2]
                 self.cc.put("aidraw_config", json.dumps(self.config))
-                return True, tuple([True, "[Naifu] 已设置Naifu后端链接", "nai"])
+                return True, tuple([True, "[novelai] 已设置novelai后端链接", "nai"])
             
             if l[1].lower() == "config":
                 # 查看self.config
-                return True, tuple([True, f"[Naifu] 当前配置：\n{json.dumps(self.config, indent=4)}", "nai"])
+                return True, tuple([True, f"[novelai] 当前配置：\n{json.dumps(self.config, indent=4)}", "nai"])
 
             if l[1].lower() == "cset":
                 if len(l) < 4:
-                    return True, tuple([True, f"[Naifu] 参数不足", "nai"])
+                    return True, tuple([True, f"[novelai] 参数不足", "nai"])
                 if l[2] not in self.config:
-                    return True, tuple([True, f"[Naifu] 参数不存在", "nai"])
+                    return True, tuple([True, f"[novelai] 参数不存在", "nai"])
                 self.config[l[2]] = "".join(l[3:])
                 self.cc.put("aidraw_config", json.dumps(self.config))
-                return True, tuple([True, f"[Naifu] 参数设置成功", "nai"])
+                return True, tuple([True, f"[novelai] 参数设置成功", "nai"])
                 
             
             prompt = "".join(l[1:])
@@ -97,20 +97,20 @@ class AIDrawPlugin:
                 while self.busy:
                     time.sleep(2)
                 self.busy = True
-                filepath = self.naifu(prompt, temp_params)
+                filepath = self.novelai(prompt, temp_params)
                 self.busy = False
                 return True, tuple([True, [Plain("图像生成成功~"), Image.fromFileSystem(filepath)], "nai"])
             except Exception as e:
                 self.busy = False
-                return True, tuple([True, f"[Naifu] 生成图像失败: {traceback.format_exc()}", "nai"])
+                return True, tuple([True, f"[novelai] 生成图像失败: {traceback.format_exc()}", "nai"])
                 
         return False, None
 
 
-    def naifu(self, prompt, tmp_params) -> str:
-        if not self.config["naifu_site"]:
+    def novelai(self, prompt, tmp_params) -> str:
+        if not self.config["novelai_site"]:
             raise Exception("未设置Colab链接")
-        site = self.config["naifu_site"]
+        site = self.config["novelai_site"]
         if site.endswith("/"):
             site = site[:-1]
         post_url = site + "/generate-stream"
@@ -133,7 +133,7 @@ class AIDrawPlugin:
             "uc": self.config["ntags"],
         }
         params.update(tmp_params)
-
+        
         print(json.dumps(params, indent=4))
         filepath = self.post(post_url, header, params)
         return filepath
@@ -164,7 +164,7 @@ class AIDrawPlugin:
     def help_menu(self):
         return """
 ===DrawAI图像生成支持插件V1.0.0===
-指令：
+指令(NovelAI)：
 1. /nai <prompt> 生成一张图片
 例如：/nai masterpiece, best quality, girl, red eyes, medium hair, white hair, ahoge
 2. /nai <prompt> #<params> 生成一张图片，params为可选参数，参数之间用|分隔，参数格式为key=value
