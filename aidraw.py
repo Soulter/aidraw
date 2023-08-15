@@ -73,7 +73,7 @@ class AIDrawPlugin:
                     return True, tuple([True, f"[Naifu] 参数不足", "nai"])
                 if l[2] not in self.config:
                     return True, tuple([True, f"[Naifu] 参数不存在", "nai"])
-                self.config[l[2]] = l[3]
+                self.config[l[2]] = "".join(l[3:])
                 self.cc.put("aidraw_config", json.dumps(self.config))
                 return True, tuple([True, f"[Naifu] 参数设置成功", "nai"])
                 
@@ -83,11 +83,11 @@ class AIDrawPlugin:
             if "#" in prompt:
                 t = prompt.split("#")
                 prompt = t[0]
-                temp_params_list = t[1].split(",")
+                temp_params_list = t[1].split("|")
                 temp_params = {}
                 for i in temp_params_list:
                     key = i.split("=")[0]
-                    value = i.split("=")[1]
+                    value = "".join(i.split("=")[1:])
                     if key == "ntags":
                         key = "uc"
 
@@ -168,8 +168,8 @@ class AIDrawPlugin:
 指令：
 1. /nai <prompt> 生成一张图片
 例如：/nai masterpiece, best quality, girl, red eyes, medium hair, white hair, ahoge
-2. /nai <prompt> #<params> 生成一张图片，params为可选参数，参数之间用逗号分隔，参数格式为key=value
-例如: /nai masterpiece, best quality, girl #width=512,height=768,step=28
+2. /nai <prompt> #<params> 生成一张图片，params为可选参数，参数之间用|分隔，参数格式为key=value
+例如: /nai masterpiece, best quality, girl #width=512|height=768|step=28
 3. /nai site <url> 设置Colab链接
 4. /nai config 查看当前配置
 5. /nai cset <key> <value> 设置配置，key为配置名，value为配置值
