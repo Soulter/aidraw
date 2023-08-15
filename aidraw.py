@@ -118,8 +118,7 @@ class AIDrawPlugin:
             "Content-Type": "application/json",
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
         }
-        if self.seed is None:
-            self.seed = random.randint(0, 4294967295)
+        self.seed = random.randint(0, 4294967295)
         params = {
             "prompt": prompt,
             "width": self.config["width"],
