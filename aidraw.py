@@ -7,7 +7,10 @@ from nakuru import (
     FriendMessage
 )
 from botpy.message import Message, DirectMessage
-from model.platform.qq import QQ
+try:
+    from model.platform.qq_official import QQOfficial
+except:
+    raise Exception("版本不兼容，请更新 AstrBot。")
 import time
 import threading
 from util import cmd_config as cc
