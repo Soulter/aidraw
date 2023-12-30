@@ -54,7 +54,7 @@ class AIDrawPlugin:
         self.config = json.loads(self.cc.get("aidraw_config"))
 
 
-    def run(self, message: str, role: str, platform: str, message_obj, qq_platform: QQ):
+    def run(self, message: str, role: str, platform: str, message_obj, qq_platform: QQOfficial):
 
         if message.lower().startswith("nai") or message.lower().startswith("/nai") or message.lower().startswith("画"):
             l = message.split(" ")
